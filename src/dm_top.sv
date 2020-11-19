@@ -23,7 +23,9 @@ module dm_top #(
   parameter int unsigned        DmBaseAddress    = 'h1000, // default to non-zero page
   // Bitmask to select physically available harts for systems
   // that don't use hart numbers in a contiguous fashion.
-  parameter logic [NrHarts-1:0] SelectableHarts  = {NrHarts{1'b1}}
+  parameter logic [NrHarts-1:0] SelectableHarts  = {NrHarts{1'b1}},
+  // Optional override to support 32 bit cores on 64 bit bus
+  parameter int unsigned        MaxAarSize       = 0
 ) (
   input  logic                  clk_i,       // clock
   input  logic                  rst_ni,      // asynchronous reset active low, connect PoR here, not the system reset
@@ -185,7 +187,8 @@ module dm_top #(
     .NrHarts(NrHarts),
     .BusWidth(BusWidth),
     .SelectableHarts(SelectableHarts),
-    .DmBaseAddress(DmBaseAddress)
+    .DmBaseAddress(DmBaseAddress),
+    .MaxAarSize(MaxAarSize)
   ) i_dm_mem (
     .clk_i,
     .rst_ni,

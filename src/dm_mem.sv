@@ -20,7 +20,8 @@ module dm_mem #(
   parameter int unsigned        NrHarts          =  1,
   parameter int unsigned        BusWidth         = 32,
   parameter logic [NrHarts-1:0] SelectableHarts  = {NrHarts{1'b1}},
-  parameter int unsigned        DmBaseAddress    = '0
+  parameter int unsigned        DmBaseAddress    = '0,
+  parameter int unsigned        MaxAarSize       = 0
 ) (
   input  logic                             clk_i,       // Clock
   input  logic                             rst_ni,      // debug module reset
@@ -60,7 +61,7 @@ module dm_mem #(
   localparam int unsigned DbgAddressBits = 12;
   localparam int unsigned HartSelLen     = (NrHarts == 1) ? 1 : $clog2(NrHarts);
   localparam int unsigned NrHartsAligned = 2**HartSelLen;
-  localparam int unsigned MaxAar         = (BusWidth == 64) ? 4 : 3;
+  localparam int unsigned MaxAar         = (MaxAarSize != 0) ? MaxAarSize : ((BusWidth == 64) ? 4 : 3);
   localparam bit          HasSndScratch  = (DmBaseAddress != 0);
   // Depending on whether we are at the zero page or not we either use `x0` or `x10/a0`
   localparam logic [4:0]  LoadBaseAddr   = (DmBaseAddress == 0) ? 5'd0 : 5'd10;
